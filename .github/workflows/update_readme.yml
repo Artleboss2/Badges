@@ -1,0 +1,39 @@
+name: Generate Documentation
+on:
+  push:
+    paths:
+      - 'icons/**' # Se déclenche quand on modifie le dossier icons
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate Markdown
+        run: |
+          echo "# 🎨 Ma Bibliothèque de Badges" > DOCUMENTATION.md
+          echo "Dernière mise à jour : $(date +'%Y-%m-%d %H:%M')" >> DOCUMENTATION.md
+          echo "" >> DOCUMENTATION.md
+          echo "| Aperçu | Code Markdown | Lien Brut (Raw) |" >> DOCUMENTATION.md
+          echo "| :---: | :--- | :--- |" >> DOCUMENTATION.md
+
+          # Boucle sur tous les fichiers png, jpg, gif dans le dossier icons
+          find icons -type f \( -name "*.png" -o -name "*.gif" -o -name "*.jpg" \) | while read file; do
+            FILENAME=$(basename "$file")
+            RAW_URL="https://raw.githubusercontent.com/${{ github.repository }}/main/$file"
+            
+            # Ajoute une ligne dans le tableau du document
+            echo "| ![$FILENAME]($RAW_URL) | \`![$FILENAME]($RAW_URL)\` | [$RAW_URL]($RAW_URL) |" >> DOCUMENTATION.md
+          done
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add DOCUMENTATION.md
+          git commit -m "Update DOCUMENTATION.md with new icons" || echo "No changes to commit"
+          git push
