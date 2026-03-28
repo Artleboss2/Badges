@@ -7,26 +7,13 @@ def create_badge(label, message, color, filename, style="flat"):
     if not os.path.exists(base_dir):
         os.makedirs(base_dir)
 
-    # Paramètres par défaut (Style Flat)
-    r_val = "3"
-    h_val = "20"
-    font_size = "11"
-    y_text = "14"
-    y_shadow = "15"
-    text_transform = lambda x: x
-
-    # Adaptations selon le style
+    r_val, h_val, font_size, y_text, y_shadow = "3", "20", "11", "14", "15"
+    
     if style == "flat-square":
         r_val = "0"
     elif style == "for-the-badge":
-        r_val = "0"
-        h_val = "28"
-        font_size = "10"
-        y_text = "18"
-        y_shadow = "19"
-        text_transform = lambda x: x.upper()
-        label = text_transform(label)
-        message = text_transform(message)
+        r_val, h_val, font_size, y_text, y_shadow = "0", "28", "10", "18", "19"
+        label, message = label.upper(), message.upper()
 
     l_width = len(label) * (8 if style == "for-the-badge" else 7) + 12
     m_width = len(message) * (8 if style == "for-the-badge" else 7) + 12
@@ -52,7 +39,21 @@ def create_badge(label, message, color, filename, style="flat"):
     with open(os.path.join(base_dir, f"{name}.svg"), "w") as f:
         f.write(svg)
 
+def get_github_data(username):
+    url = f"https://api.github.com/users/{username}"
+    req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    with urllib.request.urlopen(req) as r:
+        return json.loads(r.read().decode())
+
 if __name__ == "__main__":
-    create_badge("license", "MIT", "#44cc11", "license", style="flat")
-    create_badge("license", "MIT", "#44cc11", "license", style="flat-square")
-    create_badge("license", "MIT", "#44cc11", "license", style="for-the-badge")
+    try:
+        data = get_github_data("Artleboss2")
+        repos = str(data.get("public_repos", 0))
+        followers = str(data.get("followers", 0))
+        
+        # Generation des badges de test
+        create_badge("repos", repos, "#007ec6", "github_repos", "flat")
+        create_badge("followers", followers, "#4c1", "followers", "flat-square")
+        create_badge("status", "online", "#e05d44", "status", "for-the-badge")
+    except:
+        create_badge("github", "error", "#999", "github_repos")
