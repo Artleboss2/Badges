@@ -33,31 +33,34 @@ module.exports = async (req, res) => {
         }
 
         res.setHeader('Content-Type', 'image/svg+xml');
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+
         res.send(`
 <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <style>
-        .title { font: 600 18px 'Segoe UI', Ubuntu, sans-serif; fill: #58a6ff; }
-        .stat { font: 800 28px 'Segoe UI', Ubuntu, sans-serif; text-anchor: middle; fill: #ffffff; }
-        .label { font: 400 14px 'Segoe UI', Ubuntu, sans-serif; text-anchor: middle; fill: #8b949e; }
-        .fire { font: 800 28px 'Segoe UI', Ubuntu, sans-serif; text-anchor: middle; fill: #${fire_color}; }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .animate { opacity: 0; animation: fadeIn 0.5s ease-out forwards; }
-    </style>
-
-    <rect x="0.5" y="0.5" width="494" height="194" rx="10" fill="#${bg_color}" stroke="#30363d"/>
+    <rect x="0" y="0" width="495" height="195" rx="10" fill="#${bg_color}" />
+    <rect x="0.5" y="0.5" width="494" height="194" rx="10" stroke="#30363d" fill="none" />
     
-    <text x="25" y="35" class="title">${user}'s Real Stats</text>
+    <text x="25" y="35" fill="#58a6ff" font-family="Segoe UI, Ubuntu, sans-serif" font-weight="600" font-size="18">
+        ${user}'s Real Stats
+    </text>
 
-    <g transform="translate(124, 110)" class="animate" style="animation-delay: 100ms">
-        <text x="0" y="0" class="stat">${calendar.totalContributions}</text>
-        <text x="0" y="25" class="label">Total Contributions</text>
+    <g transform="translate(124, 120)">
+        <text x="0" y="0" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Ubuntu, sans-serif" font-weight="800" font-size="28">
+            ${calendar.totalContributions}
+        </text>
+        <text x="0" y="25" text-anchor="middle" fill="#8b949e" font-family="Segoe UI, Ubuntu, sans-serif" font-weight="400" font-size="14">
+            Total Contributions
+        </text>
     </g>
 
-    <g transform="translate(371, 110)" class="animate" style="animation-delay: 300ms">
-        <text x="0" y="0" class="fire">${currentStreak}</text>
-        <text x="0" y="25" class="label">Current Streak</text>
-        <path d="M-8 -55 C-8 -55 -8 -40 -13 -35 C-18 -30 -23 -27 -23 -20 C-23 -12 -16 -5 -8 -5 C0 -5 7 -12 7 -20 C7 -30 -3 -55 -8 -55" fill="#${fire_color}" transform="translate(8, 10)"/>
+    <g transform="translate(371, 120)">
+        <text x="0" y="0" text-anchor="middle" fill="#${fire_color}" font-family="Segoe UI, Ubuntu, sans-serif" font-weight="800" font-size="28">
+            ${currentStreak}
+        </text>
+        <text x="0" y="25" text-anchor="middle" fill="#8b949e" font-family="Segoe UI, Ubuntu, sans-serif" font-weight="400" font-size="14">
+            Current Streak
+        </text>
+        <path d="M-8 -55 C-8 -55 -8 -40 -13 -35 C-18 -30 -23 -27 -23 -20 C-23 -12 -16 -5 -8 -5 C0 -5 7 -12 7 -20 C7 -30 -3 -55 -8 -55" fill="#${fire_color}" transform="translate(0, -10) scale(0.8)"/>
     </g>
 
     <line x1="247.5" y1="80" x2="247.5" y2="150" stroke="#30363d" stroke-width="1"/>
