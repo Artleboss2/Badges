@@ -1,8 +1,9 @@
 name: Generate Badges
 on:
+  push:
+    branches: [ main ]
   schedule:
-    - cron: '0 * * * *'  
-  workflow_dispatch:
+    - cron: '0 * * * *'
 
 jobs:
   build:
@@ -16,13 +17,13 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Generate badges
-        run: python generate.py
+      - name: Run Generator
+        run: python .github/scripts/generate_badges.py
 
-      - name: Commit and push if changed
+      - name: Commit and push
         run: |
           git config --global user.name "Badge Bot"
           git config --global user.email "actions@github.com"
           git add badges/*.svg
-          git commit -m "Update badges" || exit 0
+          git commit -m "Update badges" || echo "No changes to commit"
           git push
